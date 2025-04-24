@@ -34,6 +34,7 @@ npm run dev
 
 ## Usage
 
-1. Open the application in your browser at http://localhost:5000
+1. Open the application in your browser at http://localhost:8000
 2. Sign up and log in
 3. Send prompts and view responses
+# CIS469_Project
