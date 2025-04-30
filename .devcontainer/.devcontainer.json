@@ -1,7 +1,7 @@
 {
     "name": "Scribble.ai",
     "image": "mcr.microsoft.com/devcontainers/python:3.11-node",
-    "postCreateCommand": "pip install -r requirements.txt && npm install --prefix frontend",
+    "postCreateCommand": "pip install -r requirements.txt && npm install --prefix frontend/myapp && npm run build --prefix frontend/myapp",
     "customizations": {
       "vscode": {
         "settings": {},
