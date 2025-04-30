@@ -11,7 +11,7 @@ load_dotenv()
 
 history_data = []
 
-LLM_API_KEY = os.getenv("LLM_API_KEY")
+LLM_API_KEY = os.getenv("LLM_API_KEY").strip()
 client = OpenAI(api_key=LLM_API_KEY)
 
 structure = "Read the given text carefully and extract the main goal and key supporting points. Present your analysis in a structured format but do not use *.\n\n# Steps\n\n1. Comprehend the Text: Read through the text thoroughly to understand its main idea.\n2. Identify Key Components:\n   - Title: Determine a suitable title for the text.\n   - Audience: Identify who the intended audience is.\n   - Problem: Extract the main problem or issue discussed.\n   - Key Points: List out the key supporting points mentioned in the text.\n   - Solutions: Identify any solutions or recommendations provided.\n   - Goal: Determine the ultimate goal of the text.\n\n# Output Format\n\n- Note Title: [A concise title summarizing the text]\n- Audience: [The intended audience for the text]\n- Problem: [The main problem or issue discussed]\n- KeyPoints: [A list of key supporting points from the text]\n- Solutions: [Identified solutions or recommendations]\n- Goal: [The ultimate goal of the text]"
