@@ -1,13 +1,20 @@
-from flask import Flask, request, jsonify,send_file, render_template
+from flask import Flask, request, jsonify,send_file, render_template, redirect
 import sqlite3
 from flask_cors import CORS, cross_origin
 import os
 from openai import OpenAI
+import subprocess
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 history_data = []
 
-key = "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"
-client = OpenAI(api_key=key)
+LLM_API_KEY = os.getenv("LLM_API_KEY")
+client = OpenAI(api_key=LLM_API_KEY)
+
+structure = "Read the given text carefully and extract the main goal and key supporting points. Present your analysis in a structured format but do not use *.\n\n# Steps\n\n1. Comprehend the Text: Read through the text thoroughly to understand its main idea.\n2. Identify Key Components:\n   - Title: Determine a suitable title for the text.\n   - Audience: Identify who the intended audience is.\n   - Problem: Extract the main problem or issue discussed.\n   - Key Points: List out the key supporting points mentioned in the text.\n   - Solutions: Identify any solutions or recommendations provided.\n   - Goal: Determine the ultimate goal of the text.\n\n# Output Format\n\n- Note Title: [A concise title summarizing the text]\n- Audience: [The intended audience for the text]\n- Problem: [The main problem or issue discussed]\n- KeyPoints: [A list of key supporting points from the text]\n- Solutions: [Identified solutions or recommendations]\n- Goal: [The ultimate goal of the text]"
 
 app = Flask(__name__, 
             template_folder='./frontend/myapp/dist',
@@ -19,29 +26,40 @@ CORS(app)
 @app.route('/summarize', methods=['POST'])
 def summarize():
     data = request.get_json()
-    prompt = data.get('text', '')
+    summary = data.get('text', '')
 
-    res1 = client.chat.completions.create(
-        model= "gpt-4",
-        messages = [
-            {"role": "user","content": "Make a short phrase title about this text: " + prompt},
-        ]
+    response = client.responses.create(
+        model="gpt-4.1-nano",
+        input=[{"role": "system","content":[{"type": "input_text","text": structure}]},{"role": "user","content": [{"type": "input_text","text": summary}]}],
+        text={"format": {"type": "text"}} 
     )
-    summary = data.get('text', '')    
 
-    summary = "Please read the following text and extract the main goal and key supporting points. Present your answer in the following format: Audience:, Problem:, KeyPoints:, Solutions:, Goal:  " + summary
-    res2 = client.chat.completions.create(
-        model= "gpt-4",
-        messages = [
-            {"role": "user","content": summary},
-        ]
-    )
-    history_data.append({"prompt": prompt, "summary":summary})
-    # return jsonify({"prompt": prompt, "summary": summary})
-    return jsonify({"prompt": res1.choices[0].message.content, "summary": res2.choices[0].message.content})
-@app.route('/history')
-def history():
-    return render_template('history.html', history=history_data)
+    extracted_text = response.output[0].content[0].text
+    # print(response)
+    lines = extracted_text.strip().split('\n')
+
+    newText = []
+    note_title = None
+    for line in lines:
+        if line.startswith("- Note Title:"):
+            note_title = line.split("- Note Title:", 1)[1].strip()
+        else:
+
+            newText.append(line)
+
+    result = "\n".join(newText)
+
+
+    history_data.append({"prompt": note_title, "summary":result})
+    return jsonify({"prompt": note_title, "summary": result})
+
+@app.route('/navigate_to_history', methods=['POST'])
+def navigate_to_history():
+    return jsonify({'redirect_url': '/history'})
+
+@app.route('/retrieve_chat_history', methods=['GET'])
+def retrieve_chat_history():
+    return jsonify({'history': history_data})
 
 # main route
 @app.route('/')

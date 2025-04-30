@@ -62,6 +62,21 @@ function Sidebar({history}) {
         </a>
         <Chats history={history} />
       </div>
+        <a
+          href="javascript:void(0)"
+          className="openbtn"
+          onClick={openNav}
+          style={{
+            position: 'absolute',
+            top: '0',
+            fontSize: '36px',
+            color: '#818181',
+            display: 'block',
+            transition: '0.3s',
+          }}
+        >
+          &#9776;
+        </a>
 
       <div
         id="main"
@@ -71,9 +86,6 @@ function Sidebar({history}) {
           padding: '16px',
         }}
       >
-        <button className="openbtn" onClick={openNav}>
-          &#9776;
-        </button>
       </div>
     </>
   );

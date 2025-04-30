@@ -1,6 +1,6 @@
 CIS469 Project
 
-This is web application for an LLM that requires you to sign up and log in before sending prompts. Once you login it lists the history of your prompts and responses and you can send new prompts.
+This is web application to convert long forms of text into ready-to-go notes. Each query is saved and available for refrence in the history page! 
 
 ## Setup
 
