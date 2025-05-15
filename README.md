@@ -1,6 +1,6 @@
 CIS469 Project
 
-This is web application to convert long forms of text into ready-to-go notes. Each query is saved and available for refrence in the history page! 
+This is web application to convert long forms of text into ready-to-go notes. Each query is saved and available for refrence in the history page! To use this application via codespaces, simply fork the project and add a github secret called LLM_API_KEY and add your openai api key
 
 ## Setup
 
